@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Flip Knowledge</string>
+    <string name="question">Who was the 44th President of the United States?</string>
+    <string name="answer">Barrack Obama</string>
+</resources>
