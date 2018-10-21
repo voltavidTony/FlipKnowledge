@@ -16,162 +16,170 @@
             android:id="@+id/questionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/card_behind_high"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/headerQuestion"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16sp"
-                android:layout_marginTop="6sp"
-                android:layout_marginRight="16sp"
-                android:fontFamily="@font/quicksand"
-                android:text="@string/header_question"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card_shape"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="onCardClick"
-                android:paddingTop="8sp"
-                android:paddingBottom="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:background="@drawable/card_background"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/flashcard_question"
-                    android:layout_width="0dp"
+                    android:id="@+id/headerQuestion"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16sp"
-                    android:layout_marginTop="10sp"
+                    android:layout_marginTop="6sp"
                     android:layout_marginRight="16sp"
-                    android:layout_marginBottom="10sp"
-                    android:clickable="false"
                     android:fontFamily="@font/quicksand"
-                    android:text="@string/question"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textSize="36sp"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="@string/header_question"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/flashcard_answer"
-                    android:layout_width="0dp"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/flipCard"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16sp"
-                    android:layout_marginTop="10sp"
+                    android:layout_marginTop="12sp"
                     android:layout_marginRight="16sp"
-                    android:layout_marginBottom="10sp"
-                    android:clickable="false"
-                    android:fontFamily="@font/quicksand"
-                    android:text="@string/answer"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textSize="36sp"
-                    android:textStyle="italic"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginBottom="12sp"
+                    android:background="@drawable/card_shape"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onCardClick"
+                    android:paddingTop="8sp"
+                    android:paddingBottom="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </android.support.constraint.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/flashcard_question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/quicksand"
+                        android:text="@string/question"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="36sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/headerAnswers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16sp"
-                android:layout_marginTop="6sp"
-                android:layout_marginRight="16sp"
-                android:fontFamily="@font/quicksand"
-                android:text="@string/header_choices"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
+                    <TextView
+                        android:id="@+id/flashcard_answer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:alpha="0"
+                        android:fontFamily="@font/quicksand"
+                        android:text="@string/answer"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="36sp"
+                        android:textStyle="italic"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/choicesView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_shape"
-                android:orientation="vertical"
-                android:paddingLeft="16sp"
-                android:paddingRight="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="30sp" />
+                android:background="@drawable/card_background"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/choiceOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="6sp"
+                    android:layout_marginRight="16sp"
                     android:fontFamily="@font/quicksand"
-                    android:onClick="onCorrectChoiceClick"
-                    android:text="@string/barrack_obama"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                    android:text="@string/header_choices"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp" />
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="30sp" />
-
-                <TextView
-                    android:id="@+id/choiceTwo"
+                <LinearLayout
+                    android:id="@+id/choicesView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/quicksand"
-                    android:onClick="onIncorrectChoiceClick"
-                    android:text="@string/donald_trump"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="12sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginBottom="12sp"
+                    android:background="@drawable/card_shape"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="30sp" />
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="30sp" />
 
-                <TextView
-                    android:id="@+id/choiceThree"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/quicksand"
-                    android:onClick="onIncorrectChoiceClick"
-                    android:text="@string/george_bush"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/choiceOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/quicksand"
+                        android:onClick="onCorrectChoiceClick"
+                        android:text="@string/barrack_obama"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="30sp" />
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="30sp" />
+
+                    <TextView
+                        android:id="@+id/choiceTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/quicksand"
+                        android:onClick="onIncorrectChoiceClick"
+                        android:text="@string/donald_trump"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="30sp" />
+
+                    <TextView
+                        android:id="@+id/choiceThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/quicksand"
+                        android:onClick="onIncorrectChoiceClick"
+                        android:text="@string/george_bush"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="30sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
