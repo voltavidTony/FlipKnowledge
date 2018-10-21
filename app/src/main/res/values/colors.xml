@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="card_paper">#FFFEFD</color>
+    <color name="card_behind_high">#e8eaf6</color>
+    <color name="card_behind_low">#e8e6d9</color>
+    <color name="answer_correct">#4caf50</color>
+    <color name="answer_incorrect">#b71c1c</color>
 </resources>
