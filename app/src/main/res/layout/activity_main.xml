@@ -48,6 +48,7 @@
                     android:background="@drawable/card_shape"
                     android:clickable="true"
                     android:focusable="true"
+                    android:minHeight="200sp"
                     android:onClick="onCardClick"
                     android:paddingTop="8sp"
                     android:paddingBottom="20sp"
