@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Flip Knowledge</string>
-    <string name="question">Who was the 44th president of the United States?</string>
+    <string name="question">\nWho was the 44th president of the United States?\n</string>
     <string name="answer">Barack Obama</string>
     <string name="wrong_two">George Bush</string>
     <string name="wrong_one">Donald Trump</string>
