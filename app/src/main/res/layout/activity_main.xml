@@ -2,15 +2,25 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="@string/title_topic" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/card_behind_low">
+        android:background="@color/card_behind_low"
+        android:paddingTop="?attr/actionBarSize">
 
         <LinearLayout
             android:id="@+id/questionView"
@@ -26,61 +36,44 @@
 
                 <TextView
                     android:id="@+id/headerQuestion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="6sp"
-                    android:layout_marginRight="16sp"
-                    android:fontFamily="@font/quicksand"
+                    style="@style/CommonHeader"
                     android:text="@string/header_question"
-                    android:textAlignment="textStart"
                     android:textColor="@color/colorPrimary"
                     android:textSize="24sp" />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/flipCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="12sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginBottom="12sp"
+                    style="@style/CommonLayout"
                     android:background="@drawable/card_shape"
                     android:clickable="true"
+                    android:elevation="2dp"
                     android:focusable="true"
-                    android:onClick="onCardClick"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:onClick="onCardClick">
 
                     <TextView
                         android:id="@+id/flashcard_question"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/quicksand"
+                        android:layout_gravity="center"
                         android:text="@string/question"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/flashcard_answer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/quicksand"
+                        android:layout_gravity="center"
+                        android:alpha="0"
                         android:text="@string/answer"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
                         android:textStyle="italic"
-                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </android.support.constraint.ConstraintLayout>
@@ -94,95 +87,69 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="6sp"
-                    android:layout_marginRight="16sp"
-                    android:fontFamily="@font/quicksand"
+                    style="@style/CommonHeader"
                     android:text="@string/header_choices"
-                    android:textAlignment="textStart"
                     android:textColor="@color/colorPrimary"
                     android:textSize="24sp" />
 
-                <LinearLayout
-                    android:id="@+id/choicesView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="12sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginBottom="12sp"
+                <android.support.constraint.ConstraintLayout
+                    style="@style/CommonLayout"
                     android:background="@drawable/card_shape"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    android:elevation="2dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp">
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp" />
+                    <LinearLayout
+                        style="@style/CommonLayout"
+                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
 
-                    <TextView
-                        android:id="@+id/choiceOne"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/quicksand"
-                        android:onClick="onCorrectChoiceClick"
-                        android:text="@string/answer"
-                        android:textAlignment="center"
-                        android:textColor="?android:attr/colorForeground"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/choiceOne"
+                            style="@style/MultipleChoice"
+                            android:background="@drawable/choice_ripple_correct"
+                            android:onClick="onCorrectChoiceClick"
+                            android:text="@string/answer" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp" />
+                        <TextView
+                            android:id="@+id/choiceTwo"
+                            style="@style/MultipleChoice"
+                            android:background="@drawable/choice_ripple_incorrect"
+                            android:onClick="onIncorrectChoiceClick"
+                            android:text="@string/wrong_one" />
 
-                    <TextView
-                        android:id="@+id/choiceTwo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/quicksand"
-                        android:onClick="onIncorrectChoiceClick"
-                        android:text="@string/wrong_one"
-                        android:textAlignment="center"
-                        android:textColor="?android:attr/colorForeground"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/choiceThree"
+                            style="@style/MultipleChoice"
+                            android:background="@drawable/choice_ripple_incorrect"
+                            android:onClick="onIncorrectChoiceClick"
+                            android:text="@string/wrong_two" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/choiceThree"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/quicksand"
-                        android:onClick="onIncorrectChoiceClick"
-                        android:text="@string/wrong_two"
-                        android:textAlignment="center"
-                        android:textColor="?android:attr/colorForeground"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp" />
-
-                </LinearLayout>
+                </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12sp"
+        android:layout_marginBottom="12sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onAddClick"
+        android:src="@drawable/ic_add_white_24dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/ripple_color" />
 
 </android.support.constraint.ConstraintLayout>

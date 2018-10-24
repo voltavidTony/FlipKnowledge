@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Flip Knowledge</string>
+    <string name="app_name">FlipKnowledge</string>
+    <string name="title_topic">View Card</string>
     <string name="question">\nWho was the 44th president of the United States?\n</string>
     <string name="answer">Barack Obama</string>
     <string name="wrong_two">George Bush</string>
@@ -7,4 +8,18 @@
     <string name="header_question">Question:</string>
     <string name="header_answer">Answer:</string>
     <string name="header_choices">Choices:</string>
+    <string name="title_activity_card_view">CardView</string>
+    <string name="edit_clicked">Edit clicked!</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="edit_card">Edit…</string>
+    <string name="edit_header">Edit Card</string>
+    <string name="new_header">New Card</string>
+    <string name="edit_question_hint">Question</string>
+    <string name="edit_correct_answer_hint">Correct answer</string>
+    <string name="edit_incorrect_answer_1">Incorrect answer 1</string>
+    <string name="edit_incorrect_answer_2">Incorrect answer 2</string>
+    <string name="header_card_edit_card">Question &amp; Answers:</string>
+    <string name="edit_no_question">You must specify a question!</string>
+    <string name="edit_no_answer">You must specify an answer!</string>
+    <string name="edit_no_alternative">You must specify at least one wrong answer!</string>
 </resources>
