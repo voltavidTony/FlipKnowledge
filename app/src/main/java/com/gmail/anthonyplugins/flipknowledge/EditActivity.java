@@ -63,7 +63,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         Intent result = new Intent();
         result.putExtra(MainActivity.EDIT_PREVIOUS, false);
-        setResult(Activity.RESULT_OK, result);
+        setResult(Activity.RESULT_CANCELED, result);
         finish();
         return true;
     }

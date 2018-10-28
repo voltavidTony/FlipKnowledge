@@ -6,10 +6,13 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.renderscript.Sampler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +25,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -92,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.choices_section).post(new Runnable() {
             View c = findViewById(R.id.choices_section);
-            View b = findViewById(R.id.show_button);
 
             @Override
             public void run() {
@@ -106,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams lp = c.getLayoutParams();
                         lp.height = (int) animation.getAnimatedValue();
                         c.setLayoutParams(lp);
-                        if (choices_hidden) b.setAlpha(animation.getAnimatedFraction());
-                        else b.setAlpha(1 - animation.getAnimatedFraction());
                     }
                 });
                 hide_choices.addListener(new Animator.AnimatorListener() {
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onAnimationStart(Animator animation) {
                         animRunning = true;
                         choices_hidden = !choices_hidden;
-                        if (choices_hidden) b.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                             ViewGroup.LayoutParams lp = c.getLayoutParams();
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             c.setLayoutParams(lp);
-                            b.setVisibility(View.GONE);
                         }
                     }
 
@@ -166,15 +165,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK &&
-                data != null && data.getBooleanExtra(EDIT_PREVIOUS, false)) {
-            String[] new_data = data.getStringArrayExtra(EDIT_DATA);
-            ((TextView) findViewById(R.id.flashcard_question)).setText(new_data[0]);
-            ((TextView) findViewById(R.id.flashcard_answer)).setText(new_data[1]);
-            ((TextView) findViewById(R.id.choiceOne)).setText(new_data[1]);
-            ((TextView) findViewById(R.id.choiceTwo)).setText(new_data[2]);
-            ((TextView) findViewById(R.id.choiceThree)).setText(new_data[3]);
-        }
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null)
+            if (data.getBooleanExtra(EDIT_PREVIOUS, false)) {
+                String[] new_data = data.getStringArrayExtra(EDIT_DATA);
+                ((TextView) findViewById(R.id.flashcard_question)).setText(new_data[0]);
+                ((TextView) findViewById(R.id.flashcard_answer)).setText(new_data[1]);
+                ((TextView) findViewById(R.id.choiceOne)).setText(new_data[1]);
+                ((TextView) findViewById(R.id.choiceTwo)).setText(new_data[2]);
+                ((TextView) findViewById(R.id.choiceThree)).setText(new_data[3]);
+                Snackbar.make(findViewById(R.id.root_view), R.string.card_edit_suc, Snackbar.LENGTH_SHORT).show();
+            } else
+                Snackbar.make(findViewById(R.id.root_view), R.string.card_add_suc, Snackbar.LENGTH_SHORT).show();
+        answerShown = false;
     }
 
     public void onAddClick(View v) {
@@ -195,9 +197,15 @@ public class MainActivity extends AppCompatActivity {
         flipCard(false);
     }
 
-    public void onHideChoices(View v) {
+    public void onToggleChoices(View v) {
         if (animRunning) return;
-        hide_choices.setIntValues(choices_height, 0);
+        if (choices_hidden) {
+            hide_choices.setIntValues(0, choices_height);
+            ((ImageButton) findViewById(R.id.toggle_button)).setImageResource(R.drawable.ic_visibility_white_off_24dp);
+        } else {
+            hide_choices.setIntValues(choices_height, 0);
+            ((ImageButton) findViewById(R.id.toggle_button)).setImageResource(R.drawable.ic_visibility_white_24dp);
+        }
         hide_choices.start();
     }
 
@@ -206,12 +214,6 @@ public class MainActivity extends AppCompatActivity {
         sel_ans = (TransitionDrawable) ((RippleDrawable) v.getBackground()).getDrawable(1);
         sel_ans.startTransition(getResources().getInteger(R.integer.anim_duration));
         flipCard(false);
-    }
-
-    public void onShowChoices(View v) {
-        if (animRunning) return;
-        hide_choices.setIntValues(0, choices_height);
-        hide_choices.start();
     }
 
     private void flipCard(boolean reverse) {

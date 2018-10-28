@@ -23,6 +23,7 @@
     <string name="edit_no_question">You must specify a question!</string>
     <string name="edit_no_answer">You must specify an answer!</string>
     <string name="edit_no_alternative">You must specify at least one wrong answer!</string>
-    <string name="hide_choices">Hide choices</string>
-    <string name="show_choices">Show choices</string>
+    <string name="toggle_choices">Toggle choices</string>
+    <string name="card_edit_suc">Edited card successfully.</string>
+    <string name="card_add_suc">Added card successfully.</string>
 </resources>
