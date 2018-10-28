@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean cardAnimRunning = false;
     private boolean choicesHidden = false;
     private boolean hideAnimRunning = false;
+    private boolean isEditing = false;
     private float scale;
     private int choicesHeight;
 
@@ -90,20 +91,20 @@ public class MainActivity extends AppCompatActivity {
         animSet.playTogether(question, answer, header, flip);
 
         findViewById(R.id.section_choices).post(new Runnable() {
-            final View c = findViewById(R.id.section_choices);
+            final View sc = findViewById(R.id.section_choices);
 
             @Override
             public void run() {
-                choicesHeight = c.getMeasuredHeight();
+                choicesHeight = sc.getMeasuredHeight();
                 toggleChoices = ValueAnimator.ofInt(choicesHeight, 0);
                 toggleChoices.setInterpolator(new DecelerateInterpolator(1.5f));
                 toggleChoices.setDuration(getResources().getInteger(R.integer.anim_duration_400));
                 toggleChoices.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        ViewGroup.LayoutParams lp = c.getLayoutParams();
+                        ViewGroup.LayoutParams lp = sc.getLayoutParams();
                         lp.height = (int) animation.getAnimatedValue();
-                        c.setLayoutParams(lp);
+                        sc.setLayoutParams(lp);
                     }
                 });
                 toggleChoices.addListener(new Animator.AnimatorListener() {
@@ -117,9 +118,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onAnimationEnd(Animator animation) {
                         hideAnimRunning = false;
                         if (!choicesHidden) {
-                            ViewGroup.LayoutParams lp = c.getLayoutParams();
+                            ViewGroup.LayoutParams lp = sc.getLayoutParams();
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                            c.setLayoutParams(lp);
+                            sc.setLayoutParams(lp);
                         }
                     }
 
@@ -145,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.button_edit) {
+            if (isEditing) return true;
+            isEditing = true;
             if (answerShown) flipCard(true);
             Intent intent = new Intent(this, EditActivity.class);
             intent.putExtra(EDIT_PREVIOUS, true);
@@ -163,19 +166,22 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null)
             if (data.getBooleanExtra(EDIT_PREVIOUS, false)) {
-                String[] new_data = data.getStringArrayExtra(EDIT_DATA);
-                ((TextView) findViewById(R.id.text_question)).setText(new_data[0]);
-                ((TextView) findViewById(R.id.text_answer)).setText(new_data[1]);
-                ((TextView) findViewById(R.id.text_choice_one)).setText(new_data[1]);
-                ((TextView) findViewById(R.id.text_choice_two)).setText(new_data[2]);
-                ((TextView) findViewById(R.id.text_choice_three)).setText(new_data[3]);
+                String[] ed = data.getStringArrayExtra(EDIT_DATA);
+                ((TextView) findViewById(R.id.text_question)).setText(ed[0]);
+                ((TextView) findViewById(R.id.text_answer)).setText(ed[1]);
+                ((TextView) findViewById(R.id.text_choice_one)).setText(ed[1]);
+                ((TextView) findViewById(R.id.text_choice_two)).setText(ed[2]);
+                ((TextView) findViewById(R.id.text_choice_three)).setText(ed[3]);
                 Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_edit_success, Snackbar.LENGTH_SHORT).show();
             } else
                 Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_add_success, Snackbar.LENGTH_SHORT).show();
         answerShown = false;
+        isEditing = false;
     }
 
     public void onAddClick(View v) {
+        if (isEditing) return;
+        isEditing = true;
         if (answerShown) flipCard(true);
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra(EDIT_PREVIOUS, false);
