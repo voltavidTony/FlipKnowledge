@@ -15,7 +15,8 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="@string/edit_header" />
+        app:title="@string/edit_header"
+        app:titleTextAppearance="@style/RegularTitle" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,9 +34,7 @@
 
             <TextView
                 style="@style/CommonHeader"
-                android:text="@string/header_card_edit_card"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
+                android:text="@string/header_card_edit_card" />
 
             <LinearLayout
                 style="@style/CommonLayout"
@@ -47,8 +46,13 @@
                     android:id="@+id/edit_question"
                     style="@style/CommonLayout"
                     android:hint="@string/edit_question_hint"
-                    android:inputType="textMultiLine"
-                    android:textSize="20sp" />
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:textSize="20sp">
+
+                    <requestFocus />
+
+                </EditText>
 
                 <View
                     android:layout_width="match_parent"
@@ -60,21 +64,24 @@
                     android:id="@+id/edit_answer"
                     style="@style/CommonLayout"
                     android:hint="@string/edit_correct_answer_hint"
-                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
                     android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/edit_answer_1"
                     style="@style/CommonLayout"
                     android:hint="@string/edit_incorrect_answer_1"
-                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
                     android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/edit_answer_2"
                     style="@style/CommonLayout"
                     android:hint="@string/edit_incorrect_answer_2"
-                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
                     android:textSize="20sp" />
 
             </LinearLayout>

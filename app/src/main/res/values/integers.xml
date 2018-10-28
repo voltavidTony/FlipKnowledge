@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="anim_duration">400</integer>
-    <integer name="anim_duration_ripple">300</integer>
+    <integer name="anim_duration_three_quarter">300</integer>
     <integer name="anim_duration_half">200</integer>
+    <integer name="ime_action_finish_edit">7</integer>
 </resources>

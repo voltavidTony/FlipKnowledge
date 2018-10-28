@@ -14,7 +14,8 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="@string/title_topic" />
+        app:title="@string/title_topic"
+        app:titleTextAppearance="@style/RegularTitle" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,9 +38,7 @@
                 <TextView
                     android:id="@+id/headerQuestion"
                     style="@style/CommonHeader"
-                    android:text="@string/header_question"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="24sp" />
+                    android:text="@string/header_question" />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/flipCard"
@@ -48,12 +47,13 @@
                     android:clickable="true"
                     android:elevation="2dp"
                     android:focusable="true"
-                    android:onClick="onCardClick">
+                    android:onClick="onCardClick"
+                    android:paddingTop="36sp"
+                    android:paddingBottom="36sp">
 
                     <TextView
                         android:id="@+id/flashcard_question"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/Universal"
                         android:layout_gravity="center"
                         android:text="@string/question"
                         android:textAlignment="center"
@@ -64,8 +64,7 @@
 
                     <TextView
                         android:id="@+id/flashcard_answer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/Universal"
                         android:layout_gravity="center"
                         android:alpha="0"
                         android:text="@string/answer"
@@ -81,31 +80,57 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/choices_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:background="@drawable/card_background"
                 android:orientation="vertical">
 
-                <TextView
-                    style="@style/CommonHeader"
-                    android:text="@string/header_choices"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="24sp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="12dp">
+
+                    <TextView
+                        style="@style/CommonHeader"
+                        android:text="@string/header_choices" />
+
+                    <ImageButton
+                        android:id="@+id/hide_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:contentDescription="@string/hide_choices"
+                        android:focusable="true"
+                        android:onClick="onHideChoices"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_visibility_off_white_24dp"
+                        android:tint="@color/colorPrimary" />
+
+                </RelativeLayout>
 
                 <android.support.constraint.ConstraintLayout
                     style="@style/CommonLayout"
+                    android:layout_marginTop="0dp"
                     android:background="@drawable/card_shape"
-                    android:elevation="2dp"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp">
+                    android:elevation="2dp">
 
                     <LinearLayout
-                        style="@style/CommonLayout"
-                        android:layout_width="wrap_content"
+                        style="@style/Universal"
+                        android:layout_width="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent">
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/choiceOne"
@@ -134,6 +159,22 @@
 
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/show_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:contentDescription="@string/show_choices"
+                android:focusable="true"
+                android:onClick="onShowChoices"
+                android:padding="6dp"
+                android:src="@drawable/ic_visibility_white_24dp"
+                android:tint="@color/colorPrimary"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </ScrollView>
@@ -150,6 +191,6 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/ripple_color" />
+        app:rippleColor="@color/ripple_color_light" />
 
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,7 @@
     <color name="card_behind_low">#e8e6d9</color>
     <color name="answer_correct">#6ccf7a</color>
     <color name="answer_incorrect">#d74c4c</color>
-    <color name="ripple_color">#10000000</color>
+    <color name="ripple_color_dark">#17000000</color>
+    <color name="ripple_color_light">#17FFFFFF</color>
     <color name="dark_toast_text">#ffffffff</color>
 </resources>

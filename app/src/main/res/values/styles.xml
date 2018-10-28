@@ -9,6 +9,13 @@
         <item name="android:fontFamily">@font/quicksand</item>
     </style>
 
+    <style name="RegularTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Universal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -23,6 +30,8 @@
 
     <style name="CommonHeader" parent="Universal">
         <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="MultipleChoice">
@@ -30,7 +39,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">12dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?android:attr/colorForeground</item>
         <item name="android:textSize">30sp</item>
