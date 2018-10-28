@@ -2,7 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_view"
+    android:id="@+id/activity_main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -11,21 +11,20 @@
         android:id="@+id/activity_main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/app_primary"
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="@string/title_topic"
+        app:title="@string/title_main"
         app:titleTextAppearance="@style/RegularTitle" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/card_behind_low"
+        android:background="@color/bg_gradient_b"
         android:paddingTop="?attr/actionBarSize">
 
         <LinearLayout
-            android:id="@+id/questionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -33,18 +32,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_background"
+                android:background="@drawable/bg_section"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/headerQuestion"
+                    android:id="@+id/header_question"
                     style="@style/CommonHeader"
                     android:text="@string/header_question" />
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/flipCard"
+                    android:id="@+id/card_question"
                     style="@style/CommonLayout"
-                    android:background="@drawable/card_shape"
+                    android:background="@drawable/bg_card"
                     android:clickable="true"
                     android:elevation="2dp"
                     android:focusable="true"
@@ -53,10 +52,10 @@
                     android:paddingBottom="36sp">
 
                     <TextView
-                        android:id="@+id/flashcard_question"
+                        android:id="@+id/text_question"
                         style="@style/Universal"
                         android:layout_gravity="center"
-                        android:text="@string/question"
+                        android:text="@string/quiz_question"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
@@ -64,11 +63,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/flashcard_answer"
+                        android:id="@+id/text_answer"
                         style="@style/Universal"
                         android:layout_gravity="center"
                         android:alpha="0"
-                        android:text="@string/answer"
+                        android:text="@string/quiz_answer"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
@@ -81,11 +80,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/choices_section"
+                android:id="@+id/section_choices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:background="@drawable/card_background"
+                android:background="@drawable/bg_section"
                 android:orientation="vertical">
 
                 <TextView
@@ -94,7 +93,7 @@
 
                 <android.support.constraint.ConstraintLayout
                     style="@style/CommonLayout"
-                    android:background="@drawable/card_shape"
+                    android:background="@drawable/bg_card"
                     android:elevation="2dp">
 
                     <LinearLayout
@@ -110,25 +109,25 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/choiceOne"
+                            android:id="@+id/text_choice_one"
                             style="@style/MultipleChoice"
-                            android:background="@drawable/choice_ripple_correct"
+                            android:background="@drawable/bg_ripple_correct"
                             android:onClick="onCorrectChoiceClick"
-                            android:text="@string/answer" />
+                            android:text="@string/quiz_answer" />
 
                         <TextView
-                            android:id="@+id/choiceTwo"
+                            android:id="@+id/text_choice_two"
                             style="@style/MultipleChoice"
-                            android:background="@drawable/choice_ripple_incorrect"
+                            android:background="@drawable/bg_ripple_incorrect"
                             android:onClick="onIncorrectChoiceClick"
-                            android:text="@string/wrong_one" />
+                            android:text="@string/quiz_wrong_one" />
 
                         <TextView
-                            android:id="@+id/choiceThree"
+                            android:id="@+id/text_choice_three"
                             style="@style/MultipleChoice"
-                            android:background="@drawable/choice_ripple_incorrect"
+                            android:background="@drawable/bg_ripple_incorrect"
                             android:onClick="onIncorrectChoiceClick"
-                            android:text="@string/wrong_two" />
+                            android:text="@string/quiz_wrong_two" />
 
                     </LinearLayout>
 
@@ -137,19 +136,19 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/toggle_button"
+                android:id="@+id/button_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
                 android:background="@android:color/transparent"
                 android:clickable="true"
-                android:contentDescription="@string/toggle_choices"
+                android:contentDescription="@string/button_toggle_choices"
                 android:focusable="true"
                 android:onClick="onToggleChoices"
                 android:padding="6dp"
-                android:src="@drawable/ic_visibility_white_off_24dp"
-                android:tint="@color/colorPrimary" />
+                android:src="@drawable/ic_visibility_off"
+                android:tint="@color/app_primary" />
 
         </LinearLayout>
 
@@ -164,8 +163,8 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="onAddClick"
-        android:src="@drawable/ic_add_white_24dp"
+        android:src="@drawable/ic_add"
         app:fabSize="normal"
-        app:rippleColor="@color/ripple_color_light" />
+        app:rippleColor="@color/ripple_light" />
 
 </android.support.design.widget.CoordinatorLayout>

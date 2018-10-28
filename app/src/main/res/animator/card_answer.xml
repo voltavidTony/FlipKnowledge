@@ -2,7 +2,7 @@
 <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="0"
     android:propertyName="alpha"
-    android:startOffset="@integer/anim_duration_half"
+    android:startOffset="@integer/anim_duration_200"
     android:valueFrom="0"
     android:valueTo="1"
     android:valueType="floatType" />

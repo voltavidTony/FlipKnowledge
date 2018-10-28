@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-/* //device/apps/common/res/layout/transient_notification.xml
+<?xml version="1.0" encoding="utf-8"?><!-- /*
+** //device/apps/common/res/layout/transient_notification.xml
 **
 ** Copyright 2006, The Android Open Source Project
 **
@@ -14,13 +14,12 @@
 ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
-*/
--->
+*/ -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dark_toast_frame"
+    android:background="@drawable/bg_toast"
     android:orientation="vertical">
 
     <TextView
@@ -35,7 +34,7 @@
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:textAlignment="center"
-        android:textColor="@color/dark_toast_text"
+        android:textColor="@android:color/white"
         android:textSize="14sp" />
 
 </LinearLayout>
