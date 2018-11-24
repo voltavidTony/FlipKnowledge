@@ -55,7 +55,8 @@
                         android:id="@+id/text_question"
                         style="@style/Universal"
                         android:layout_gravity="center"
-                        android:text="@string/quiz_question"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
@@ -66,13 +67,48 @@
                         android:id="@+id/text_answer"
                         style="@style/Universal"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
                         android:alpha="0"
-                        android:text="@string/quiz_answer"
                         android:textAlignment="center"
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="36sp"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/button_prev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_ripple_button"
+                        android:clickable="true"
+                        android:contentDescription="@string/button_prev_card"
+                        android:focusable="true"
+                        android:onClick="onSwitchCard"
+                        android:padding="6dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_chevron"
+                        android:tint="@color/app_primary"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/button_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_ripple_button"
+                        android:clickable="true"
+                        android:contentDescription="@string/button_next_card"
+                        android:focusable="true"
+                        android:onClick="onSwitchCard"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_chevron"
+                        android:tint="@color/app_primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </android.support.constraint.ConstraintLayout>
@@ -112,22 +148,19 @@
                             android:id="@+id/text_choice_one"
                             style="@style/MultipleChoice"
                             android:background="@drawable/bg_ripple_correct"
-                            android:onClick="onCorrectChoiceClick"
-                            android:text="@string/quiz_answer" />
+                            android:onClick="onCorrectChoiceClick" />
 
                         <TextView
                             android:id="@+id/text_choice_two"
                             style="@style/MultipleChoice"
                             android:background="@drawable/bg_ripple_incorrect"
-                            android:onClick="onIncorrectChoiceClick"
-                            android:text="@string/quiz_wrong_one" />
+                            android:onClick="onIncorrectChoiceClick" />
 
                         <TextView
                             android:id="@+id/text_choice_three"
                             style="@style/MultipleChoice"
                             android:background="@drawable/bg_ripple_incorrect"
-                            android:onClick="onIncorrectChoiceClick"
-                            android:text="@string/quiz_wrong_two" />
+                            android:onClick="onIncorrectChoiceClick" />
 
                     </LinearLayout>
 
@@ -141,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:background="@android:color/transparent"
+                android:background="@drawable/bg_ripple_button"
                 android:clickable="true"
                 android:contentDescription="@string/button_toggle_choices"
                 android:focusable="true"

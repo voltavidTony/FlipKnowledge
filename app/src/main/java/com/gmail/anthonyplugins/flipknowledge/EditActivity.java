@@ -16,8 +16,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-@SuppressWarnings("ConstantConditions")
+import java.util.UUID;
+
 public class EditActivity extends AppCompatActivity {
+
+    private CardObject current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +30,12 @@ public class EditActivity extends AppCompatActivity {
         Toolbar title = findViewById(R.id.activity_edit_toolbar);
         if (getIntent().getExtras().getBoolean(MainActivity.EDIT_PREVIOUS)) {
             title.setTitle(R.string.title_edit);
-            String[] data = getIntent().getExtras().getStringArray(MainActivity.EDIT_DATA);
-            if (data != null) {
-                ((TextView) findViewById(R.id.edit_question)).setText(data[0]);
-                ((TextView) findViewById(R.id.edit_answer)).setText(data[1]);
-                ((TextView) findViewById(R.id.edit_answer1)).setText(data[2]);
-                ((TextView) findViewById(R.id.edit_answer2)).setText(data[3]);
+            current = (CardObject) getIntent().getExtras().getSerializable(MainActivity.EDIT_DATA);
+            if (current != null) {
+                ((TextView) findViewById(R.id.edit_question)).setText(current.getQuestion());
+                ((TextView) findViewById(R.id.edit_answer)).setText(current.getAnswer());
+                ((TextView) findViewById(R.id.edit_answer1)).setText(current.getWrongAnswer1());
+                ((TextView) findViewById(R.id.edit_answer2)).setText(current.getWrongAnswer2());
             }
         } else title.setTitle(R.string.title_new);
         setSupportActionBar(title);
@@ -54,14 +57,14 @@ public class EditActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.done_menu, menu);
+        if (!getIntent().getExtras().getBoolean(MainActivity.EDIT_DELETABLE))
+            menu.removeItem(R.id.button_delete);
         return true;
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        Intent result = new Intent();
-        result.putExtra(MainActivity.EDIT_PREVIOUS, false);
-        setResult(Activity.RESULT_CANCELED, result);
+        setResult(Activity.RESULT_CANCELED);
         finish();
         return true;
     }
@@ -94,16 +97,25 @@ public class EditActivity extends AppCompatActivity {
             }
 
             Intent result = new Intent();
-            result.putExtra(MainActivity.EDIT_PREVIOUS, true);
-            result.putExtra(MainActivity.EDIT_DATA, new String[]{
+            result.putExtra(MainActivity.EDIT_PREVIOUS, getIntent().getExtras().getBoolean(MainActivity.EDIT_PREVIOUS));
+            result.putExtra(MainActivity.EDIT_DATA, new CardObject(
+                    current != null ? current.getUuid() : UUID.randomUUID().toString(),
                     ((TextView) findViewById(R.id.edit_question)).getText().toString(),
                     ((TextView) findViewById(R.id.edit_answer)).getText().toString(),
                     ((TextView) findViewById(R.id.edit_answer1)).getText().toString(),
-                    ((TextView) findViewById(R.id.edit_answer2)).getText().toString()});
+                    ((TextView) findViewById(R.id.edit_answer2)).getText().toString()));
             setResult(Activity.RESULT_OK, result);
             finish();
-        } else return super.onOptionsItemSelected(item);
-        return true;
+            current = null;
+            return true;
+        }
+        if (item.getItemId() == R.id.button_delete) {
+            setResult(MainActivity.RESULT_DELETE);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean isEmpty(TextView tv) {

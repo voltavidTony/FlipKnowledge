@@ -22,6 +22,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private boolean answerShown = false;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isEditing = false;
     private float scale;
     private int choicesHeight;
+    private int currentIndex;
 
     private Animator answer;
     private Animator flip;
@@ -39,10 +42,47 @@ public class MainActivity extends AppCompatActivity {
     private TransitionDrawable selAns;
     private ValueAnimator toggleChoices;
 
+    private List<CardObject> cards;
+    private CardStorage cardStorage;
+    private CardObject current;
+
     private static final int REQUEST_CODE = 1;
+    public static final int RESULT_DELETE = 2;
 
     public static final String EDIT_DATA = "EDIT_DATA";
+    public static final String EDIT_DELETABLE = "EDIT_DELETABLE";
     public static final String EDIT_PREVIOUS = "EDIT_PREVIOUS";
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                setCard((CardObject) data.getExtras().getSerializable(EDIT_DATA));
+                if (data.getExtras().getBoolean(EDIT_PREVIOUS, false)) {
+                    cardStorage.updateCard(current);
+                    Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_edit_success, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    cardStorage.insertCards(current);
+                    cards.add(current);
+                    currentIndex = cards.size() - 1;
+                    findViewById(R.id.button_prev).setVisibility(View.VISIBLE);
+                    findViewById(R.id.button_next).setVisibility(View.GONE);
+                    Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_add_success, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+            if (resultCode == RESULT_DELETE) {
+                cardStorage.deleteCard(current);
+                cards.remove(current);
+                if (currentIndex == cards.size()) currentIndex--;
+                setCard(cards.get(currentIndex));
+                if (cards.size() == 1) findViewById(R.id.button_prev).setVisibility(View.GONE);
+            }
+        }
+        answerShown = false;
+        isEditing = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,51 +130,57 @@ public class MainActivity extends AppCompatActivity {
         animSet = new AnimatorSet();
         animSet.playTogether(question, answer, header, flip);
 
-        findViewById(R.id.section_choices).post(new Runnable() {
-            final View sc = findViewById(R.id.section_choices);
+        toggleChoices = ValueAnimator.ofInt();
+        toggleChoices.setInterpolator(new DecelerateInterpolator(1.5f));
+        toggleChoices.setDuration(getResources().getInteger(R.integer.anim_duration_400));
+        toggleChoices.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            View sc = findViewById(R.id.section_choices);
 
             @Override
-            public void run() {
-                choicesHeight = sc.getMeasuredHeight();
-                toggleChoices = ValueAnimator.ofInt(choicesHeight, 0);
-                toggleChoices.setInterpolator(new DecelerateInterpolator(1.5f));
-                toggleChoices.setDuration(getResources().getInteger(R.integer.anim_duration_400));
-                toggleChoices.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        ViewGroup.LayoutParams lp = sc.getLayoutParams();
-                        lp.height = (int) animation.getAnimatedValue();
-                        sc.setLayoutParams(lp);
-                    }
-                });
-                toggleChoices.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        hideAnimRunning = true;
-                        choicesHidden = !choicesHidden;
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        hideAnimRunning = false;
-                        if (!choicesHidden) {
-                            ViewGroup.LayoutParams lp = sc.getLayoutParams();
-                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                            sc.setLayoutParams(lp);
-                        }
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        onAnimationEnd(animation);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
+            public void onAnimationUpdate(ValueAnimator animation) {
+                ViewGroup.LayoutParams lp = sc.getLayoutParams();
+                lp.height = (int) animation.getAnimatedValue();
+                sc.setLayoutParams(lp);
             }
         });
+        toggleChoices.addListener(new Animator.AnimatorListener() {
+            View sc = findViewById(R.id.section_choices);
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                hideAnimRunning = true;
+                choicesHidden = !choicesHidden;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                hideAnimRunning = false;
+                if (!choicesHidden) {
+                    ViewGroup.LayoutParams lp = sc.getLayoutParams();
+                    lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    sc.setLayoutParams(lp);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+
+        cardStorage = new CardStorage(getApplicationContext());
+        if ((cards = cardStorage.getAllCards()).isEmpty()) {
+            cards.add(new CardObject("Who was the 44th President of the United States?", "Barack Obama", "George Bush", "Donald Trump"));
+            cardStorage.insertCards(cards.get(0));
+        }
+        setCard(cards.get(currentIndex = 0));
+
+        if (cards.size() == 1)
+            findViewById(R.id.button_next).setVisibility(View.GONE);
     }
 
     @Override
@@ -150,33 +196,12 @@ public class MainActivity extends AppCompatActivity {
             isEditing = true;
             if (answerShown) flipCard(true);
             Intent intent = new Intent(this, EditActivity.class);
+            intent.putExtra(EDIT_DATA, current);
+            intent.putExtra(EDIT_DELETABLE, cards.size() != 1);
             intent.putExtra(EDIT_PREVIOUS, true);
-            intent.putExtra(EDIT_DATA, new String[]{
-                    ((TextView) findViewById(R.id.text_question)).getText().toString(),
-                    ((TextView) findViewById(R.id.text_choice_one)).getText().toString(),
-                    ((TextView) findViewById(R.id.text_choice_two)).getText().toString(),
-                    ((TextView) findViewById(R.id.text_choice_three)).getText().toString()});
             startActivityForResult(intent, REQUEST_CODE);
         } else return super.onOptionsItemSelected(item);
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null)
-            if (data.getBooleanExtra(EDIT_PREVIOUS, false)) {
-                String[] ed = data.getStringArrayExtra(EDIT_DATA);
-                ((TextView) findViewById(R.id.text_question)).setText(ed[0]);
-                ((TextView) findViewById(R.id.text_answer)).setText(ed[1]);
-                ((TextView) findViewById(R.id.text_choice_one)).setText(ed[1]);
-                ((TextView) findViewById(R.id.text_choice_two)).setText(ed[2]);
-                ((TextView) findViewById(R.id.text_choice_three)).setText(ed[3]);
-                Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_edit_success, Snackbar.LENGTH_SHORT).show();
-            } else
-                Snackbar.make(findViewById(R.id.activity_main_root), R.string.msg_add_success, Snackbar.LENGTH_SHORT).show();
-        answerShown = false;
-        isEditing = false;
     }
 
     public void onAddClick(View v) {
@@ -184,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         isEditing = true;
         if (answerShown) flipCard(true);
         Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra(EDIT_DELETABLE, false);
         intent.putExtra(EDIT_PREVIOUS, false);
         startActivityForResult(intent, REQUEST_CODE);
     }
@@ -199,6 +225,33 @@ public class MainActivity extends AppCompatActivity {
         flipCard(false);
     }
 
+    public void onIncorrectChoiceClick(View v) {
+        if (answerShown || cardAnimRunning) return;
+        selAns = (TransitionDrawable) ((RippleDrawable) v.getBackground()).getDrawable(1);
+        selAns.startTransition(getResources().getInteger(R.integer.anim_duration_400));
+        flipCard(false);
+    }
+
+    public void onSwitchCard(View v) {
+        if (answerShown) {
+            answerShown = false;
+            findViewById(R.id.text_question).setAlpha(1.0f);
+            findViewById(R.id.text_answer).setAlpha(0.0f);
+            if (selAns != null) {
+                selAns.reverseTransition(getResources().getInteger(R.integer.anim_duration_400));
+                selAns = null;
+            }
+        }
+        // Animate text changes
+        if (v.getId() == R.id.button_next) setCard(cards.get(++currentIndex));
+        else setCard(cards.get(--currentIndex));
+        if (currentIndex == cards.size() - 1)
+            findViewById(R.id.button_next).setVisibility(View.GONE);
+        else findViewById(R.id.button_next).setVisibility(View.VISIBLE);
+        if (currentIndex == 0) findViewById(R.id.button_prev).setVisibility(View.GONE);
+        else findViewById(R.id.button_prev).setVisibility(View.VISIBLE);
+    }
+
     public void onToggleChoices(View v) {
         if (hideAnimRunning) return;
         if (choicesHidden) {
@@ -209,13 +262,6 @@ public class MainActivity extends AppCompatActivity {
             ((ImageButton) findViewById(R.id.button_toggle)).setImageResource(R.drawable.ic_visibility);
         }
         toggleChoices.start();
-    }
-
-    public void onIncorrectChoiceClick(View v) {
-        if (answerShown || cardAnimRunning) return;
-        selAns = (TransitionDrawable) ((RippleDrawable) v.getBackground()).getDrawable(1);
-        selAns.startTransition(getResources().getInteger(R.integer.anim_duration_400));
-        flipCard(false);
     }
 
     private void flipCard(boolean reverse) {
@@ -234,5 +280,21 @@ public class MainActivity extends AppCompatActivity {
             flip.setInterpolator(new OffsetInterpolator());
         }
         animSet.start();
+    }
+
+    private void setCard(CardObject card) {
+        current = card;
+        ((TextView) findViewById(R.id.text_question)).setText(current.getQuestion());
+        ((TextView) findViewById(R.id.text_answer)).setText(current.getAnswer());
+        ((TextView) findViewById(R.id.text_choice_one)).setText(current.getAnswer());
+        ((TextView) findViewById(R.id.text_choice_two)).setText(current.getWrongAnswer1());
+        ((TextView) findViewById(R.id.text_choice_three)).setText(current.getWrongAnswer2());
+
+        findViewById(R.id.section_choices).post(new Runnable() {
+            @Override
+            public void run() {
+                choicesHeight = findViewById(R.id.section_choices).getMeasuredHeight();
+            }
+        });
     }
 }

@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">FlipKnowledge</string>
+    <string name="button_delete">Delete</string>
     <string name="button_done">Done</string>
     <string name="button_edit">Edit…</string>
+    <string name="button_next_card">Next Card</string>
+    <string name="button_prev_card">Next Card</string>
     <string name="button_toggle_choices">Toggle choices</string>
     <string name="err_no_alternative">You must specify two wrong answers!</string>
     <string name="err_no_answer">You must specify an answer!</string>
@@ -16,10 +19,6 @@
     <string name="hint_edit_question">Question</string>
     <string name="msg_add_success">Added card successfully.</string>
     <string name="msg_edit_success">Edited card successfully.</string>
-    <string name="quiz_answer">Barack Obama</string>
-    <string name="quiz_question">Who was the 44th president of the United States?</string>
-    <string name="quiz_wrong_one">Donald Trump</string>
-    <string name="quiz_wrong_two">George Bush</string>
     <string name="title_edit">Edit Card</string>
     <string name="title_main">View Card</string>
     <string name="title_new">New Card</string>
