@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,20 +33,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean choicesHidden = false;
     private boolean hideAnimRunning = false;
     private boolean isEditing = false;
+    private boolean switchingCard = false;
     private float scale;
     private int choicesHeight;
     private int currentIndex;
 
-    private Animator answer;
-    private Animator flip;
-    private Animator question;
-    private AnimatorSet animSet;
+    private Animator card_flip;
+    private ValueAnimator card_switch;
+    private AnimatorSet animSet_flip;
+    private AnimatorSet animSet_switch;
     private TransitionDrawable selAns;
     private ValueAnimator toggleChoices;
 
     private List<CardObject> cards;
     private CardStorage cardStorage;
     private CardObject current;
+    private CardObject nextCard;
 
     private static final int REQUEST_CODE = 1;
     public static final int RESULT_DELETE = 2;
@@ -52,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String EDIT_DATA = "EDIT_DATA";
     public static final String EDIT_DELETABLE = "EDIT_DELETABLE";
     public static final String EDIT_PREVIOUS = "EDIT_PREVIOUS";
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -93,13 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         scale = getResources().getDisplayMetrics().density;
         findViewById(R.id.card_question).setCameraDistance(8000 * scale);
-
-        answer = AnimatorInflater.loadAnimator(this, R.animator.card_answer);
-        flip = AnimatorInflater.loadAnimator(this, R.animator.card_flip);
-        question = AnimatorInflater.loadAnimator(this, R.animator.card_question);
-        answer.setTarget(findViewById(R.id.text_answer));
-        flip.setTarget(findViewById(R.id.card_question));
-        question.setTarget(findViewById(R.id.text_question));
+        findViewById(R.id.layout_question).setCameraDistance(8000 * scale);
 
         Animator header = AnimatorInflater.loadAnimator(this, R.animator.card_header);
         header.setTarget(findViewById(R.id.header_question));
@@ -107,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animator animation) {
                 cardAnimRunning = true;
-                findViewById(R.id.card_question).setElevation(0);
+                if (!switchingCard) findViewById(R.id.card_question).setElevation(0);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                cardAnimRunning = false;
+                cardAnimRunning = switchingCard = false;
                 findViewById(R.id.card_question).setElevation(2 * scale);
             }
 
@@ -123,12 +120,82 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-                answerShown = !answerShown;
-                ((TextView) findViewById(R.id.header_question)).setText(answerShown ? R.string.header_answer : R.string.header_question);
+                if (switchingCard)
+                    ((TextView) findViewById(R.id.header_question)).setText(R.string.header_question);
+                else if (answerShown) {
+                    ((TextView) findViewById(R.id.header_question)).setText(R.string.header_answer);
+                    findViewById(R.id.text_question).setAlpha(0);
+                    findViewById(R.id.text_answer).setAlpha(1);
+                } else {
+                    ((TextView) findViewById(R.id.header_question)).setText(R.string.header_question);
+                    findViewById(R.id.text_question).setAlpha(1);
+                    findViewById(R.id.text_answer).setAlpha(0);
+                }
             }
         });
-        animSet = new AnimatorSet();
-        animSet.playTogether(question, answer, header, flip);
+
+        card_flip = AnimatorInflater.loadAnimator(this, R.animator.card_flip);
+        card_flip.setTarget(findViewById(R.id.card_question));
+        animSet_flip = new AnimatorSet();
+        animSet_flip.playTogether(header, card_flip);
+
+        card_switch = ValueAnimator.ofInt();
+        card_switch.setInterpolator(new AccelerateInterpolator(1.5f));
+        card_switch.setDuration(getResources().getInteger(R.integer.anim_duration_300));
+        card_switch.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            View cq = findViewById(R.id.card_question);
+            View ca = findViewById(R.id.card_answers);
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                cq.setTranslationX((int) animation.getAnimatedValue());
+                ca.setTranslationX((int) animation.getAnimatedValue());
+            }
+        });
+        card_switch.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                findViewById(R.id.card_question_dummy).setVisibility(View.VISIBLE);
+                View v = findViewById(R.id.text_question_dummy);
+                v.setAlpha(1);
+                ((TextView) v).setText(nextCard.getQuestion());
+                v = findViewById(R.id.text_answer_dummy);
+                v.setAlpha(0);
+                ((TextView) v).setText(nextCard.getAnswer());
+                findViewById(R.id.button_next_dummy).setVisibility(currentIndex == cards.size() - 1 ? View.GONE : View.VISIBLE);
+                findViewById(R.id.button_prev_dummy).setVisibility(currentIndex == 0 ? View.GONE : View.VISIBLE);
+                findViewById(R.id.card_answers_dummy).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.text_choice_one_dummy)).setText(nextCard.getAnswer());
+                ((TextView) findViewById(R.id.text_choice_two_dummy)).setText(nextCard.getWrongAnswer1());
+                ((TextView) findViewById(R.id.text_choice_three_dummy)).setText(nextCard.getWrongAnswer2());
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setCard(nextCard);
+                findViewById(R.id.button_next).setVisibility(currentIndex == cards.size() - 1 ? View.GONE : View.VISIBLE);
+                findViewById(R.id.button_prev).setVisibility(currentIndex == 0 ? View.GONE : View.VISIBLE);
+                findViewById(R.id.text_question).setAlpha(1);
+                findViewById(R.id.text_answer).setAlpha(0);
+                findViewById(R.id.card_question).setTranslationX(0);
+                findViewById(R.id.card_question_dummy).setVisibility(View.GONE);
+                findViewById(R.id.card_answers).setTranslationX(0);
+                findViewById(R.id.card_answers_dummy).setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        animSet_switch = new AnimatorSet();
+        animSet_switch.playTogether(card_switch, header);
 
         toggleChoices = ValueAnimator.ofInt();
         toggleChoices.setInterpolator(new DecelerateInterpolator(1.5f));
@@ -233,23 +300,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSwitchCard(View v) {
-        if (answerShown) {
-            answerShown = false;
-            findViewById(R.id.text_question).setAlpha(1.0f);
-            findViewById(R.id.text_answer).setAlpha(0.0f);
-            if (selAns != null) {
-                selAns.reverseTransition(getResources().getInteger(R.integer.anim_duration_400));
-                selAns = null;
-            }
+        if (cardAnimRunning) return;
+        if (selAns != null) {
+            selAns.reverseTransition(getResources().getInteger(R.integer.anim_duration_300));
+            selAns = null;
         }
-        // Animate text changes
-        if (v.getId() == R.id.button_next) setCard(cards.get(++currentIndex));
-        else setCard(cards.get(--currentIndex));
-        if (currentIndex == cards.size() - 1)
-            findViewById(R.id.button_next).setVisibility(View.GONE);
-        else findViewById(R.id.button_next).setVisibility(View.VISIBLE);
-        if (currentIndex == 0) findViewById(R.id.button_prev).setVisibility(View.GONE);
-        else findViewById(R.id.button_prev).setVisibility(View.VISIBLE);
+        answerShown = false;
+        switchingCard = true;
+        boolean browseNext = v.getId() == R.id.button_prev;
+        card_switch.setIntValues(0, findViewById(R.id.layout_question).getWidth() * (browseNext ? 1 : -1));
+        nextCard = cards.get(browseNext ? --currentIndex : ++currentIndex);
+        animSet_switch.start();
     }
 
     public void onToggleChoices(View v) {
@@ -258,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
             toggleChoices.setIntValues(0, choicesHeight);
             ((ImageButton) findViewById(R.id.button_toggle)).setImageResource(R.drawable.ic_visibility_off);
         } else {
-            toggleChoices.setIntValues(choicesHeight, 0);
+            toggleChoices.setIntValues(choicesHeight = findViewById(R.id.card_answers).getHeight(), 0);
             ((ImageButton) findViewById(R.id.button_toggle)).setImageResource(R.drawable.ic_visibility);
         }
         toggleChoices.start();
@@ -266,35 +327,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void flipCard(boolean reverse) {
         if (cardAnimRunning) return;
-        if (reverse) {
-            if (selAns != null) {
-                selAns.reverseTransition(getResources().getInteger(R.integer.anim_duration_400));
-                selAns = null;
-            }
-            question.setInterpolator(new ReverseLinearInterpolator());
-            answer.setInterpolator(new ReverseLinearInterpolator());
-            flip.setInterpolator(new ReverseOffsetInterpolator());
-        } else {
-            question.setInterpolator(new LinearInterpolator());
-            answer.setInterpolator(new LinearInterpolator());
-            flip.setInterpolator(new OffsetInterpolator());
+        if (answerShown && selAns != null) {
+            selAns.reverseTransition(getResources().getInteger(R.integer.anim_duration_400));
+            selAns = null;
         }
-        animSet.start();
+        answerShown = !answerShown;
+        card_flip.setInterpolator(new OffsetInterpolator(reverse));
+        animSet_flip.start();
     }
 
-    private void setCard(CardObject card) {
+    private void setCard(@NonNull CardObject card) {
         current = card;
-        ((TextView) findViewById(R.id.text_question)).setText(current.getQuestion());
-        ((TextView) findViewById(R.id.text_answer)).setText(current.getAnswer());
-        ((TextView) findViewById(R.id.text_choice_one)).setText(current.getAnswer());
-        ((TextView) findViewById(R.id.text_choice_two)).setText(current.getWrongAnswer1());
-        ((TextView) findViewById(R.id.text_choice_three)).setText(current.getWrongAnswer2());
-
-        findViewById(R.id.section_choices).post(new Runnable() {
-            @Override
-            public void run() {
-                choicesHeight = findViewById(R.id.section_choices).getMeasuredHeight();
-            }
-        });
+        ((TextView) findViewById(R.id.text_question)).setText(card.getQuestion());
+        ((TextView) findViewById(R.id.text_answer)).setText(card.getAnswer());
+        ((TextView) findViewById(R.id.text_choice_one)).setText(card.getAnswer());
+        ((TextView) findViewById(R.id.text_choice_two)).setText(card.getWrongAnswer1());
+        ((TextView) findViewById(R.id.text_choice_three)).setText(card.getWrongAnswer2());
     }
 }

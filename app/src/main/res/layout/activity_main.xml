@@ -25,20 +25,86 @@
         android:paddingTop="?attr/actionBarSize">
 
         <LinearLayout
+            android:id="@+id/layout_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_section"
-                android:orientation="vertical">
+                android:animateLayoutChanges="true"
+                android:background="@drawable/bg_section">
 
                 <TextView
                     android:id="@+id/header_question"
                     style="@style/CommonHeader"
-                    android:text="@string/header_question" />
+                    android:text="@string/header_question"
+                    app:layout_constraintBottom_toTopOf="@id/card_question"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/card_question_dummy"
+                    style="@style/CommonLayout"
+                    android:background="@drawable/bg_card"
+                    android:elevation="2dp"
+                    android:paddingTop="36sp"
+                    android:paddingBottom="36sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header_question">
+
+                    <TextView
+                        android:id="@+id/text_question_dummy"
+                        style="@style/Universal"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="36sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_answer_dummy"
+                        style="@style/Universal"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="36sp"
+                        android:textStyle="italic"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/button_prev_dummy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/button_prev_card"
+                        android:padding="6dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_chevron"
+                        android:tint="@color/app_primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/button_next_dummy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/button_next_card"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_chevron"
+                        android:tint="@color/app_primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/card_question"
@@ -49,7 +115,9 @@
                     android:focusable="true"
                     android:onClick="onCardClick"
                     android:paddingTop="36sp"
-                    android:paddingBottom="36sp">
+                    android:paddingBottom="36sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header_question">
 
                     <TextView
                         android:id="@+id/text_question"
@@ -113,60 +181,96 @@
 
                 </android.support.constraint.ConstraintLayout>
 
-            </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
                 android:id="@+id/section_choices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:background="@drawable/bg_section"
-                android:orientation="vertical">
+                android:background="@drawable/bg_section">
 
                 <TextView
+                    android:id="@+id/header_choice"
                     style="@style/CommonHeader"
-                    android:text="@string/header_choices" />
+                    android:text="@string/header_choices"
+                    app:layout_constraintBottom_toTopOf="@id/card_answers"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <android.support.constraint.ConstraintLayout
+                    android:id="@+id/card_answers_dummy"
                     style="@style/CommonLayout"
                     android:background="@drawable/bg_card"
-                    android:elevation="2dp">
+                    android:elevation="2dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header_choice">
 
-                    <LinearLayout
-                        style="@style/Universal"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:paddingTop="12dp"
-                        android:paddingBottom="12dp"
+                    <TextView
+                        android:id="@+id/text_choice_one_dummy"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_correct"
+                        android:onClick="onCorrectChoiceClick"
+                        app:layout_constraintBottom_toTopOf="@id/text_choice_two_dummy"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_choice_two_dummy"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_incorrect"
+                        android:onClick="onIncorrectChoiceClick"
+                        app:layout_constraintBottom_toTopOf="@id/text_choice_three_dummy"
+                        app:layout_constraintTop_toBottomOf="@id/text_choice_one_dummy" />
+
+                    <TextView
+                        android:id="@+id/text_choice_three_dummy"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_incorrect"
+                        android:onClick="onIncorrectChoiceClick"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/text_choice_one"
-                            style="@style/MultipleChoice"
-                            android:background="@drawable/bg_ripple_correct"
-                            android:onClick="onCorrectChoiceClick" />
-
-                        <TextView
-                            android:id="@+id/text_choice_two"
-                            style="@style/MultipleChoice"
-                            android:background="@drawable/bg_ripple_incorrect"
-                            android:onClick="onIncorrectChoiceClick" />
-
-                        <TextView
-                            android:id="@+id/text_choice_three"
-                            style="@style/MultipleChoice"
-                            android:background="@drawable/bg_ripple_incorrect"
-                            android:onClick="onIncorrectChoiceClick" />
-
-                    </LinearLayout>
+                        app:layout_constraintTop_toBottomOf="@id/text_choice_two_dummy" />
 
                 </android.support.constraint.ConstraintLayout>
 
-            </LinearLayout>
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/card_answers"
+                    style="@style/CommonLayout"
+                    android:background="@drawable/bg_card"
+                    android:elevation="2dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header_choice">
+
+                    <TextView
+                        android:id="@+id/text_choice_one"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_correct"
+                        android:onClick="onCorrectChoiceClick"
+                        app:layout_constraintBottom_toTopOf="@id/text_choice_two"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_choice_two"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_incorrect"
+                        android:onClick="onIncorrectChoiceClick"
+                        app:layout_constraintBottom_toTopOf="@id/text_choice_three"
+                        app:layout_constraintTop_toBottomOf="@id/text_choice_one" />
+
+                    <TextView
+                        android:id="@+id/text_choice_three"
+                        style="@style/MultipleChoice"
+                        android:background="@drawable/bg_ripple_incorrect"
+                        android:onClick="onIncorrectChoiceClick"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_choice_two" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.constraint.ConstraintLayout>
 
             <ImageButton
                 android:id="@+id/button_toggle"
